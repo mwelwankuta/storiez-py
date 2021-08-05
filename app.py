@@ -14,7 +14,7 @@ app = Flask(__name__, static_folder="public")
 app.secret_key = "ThDda4jd1-23;123=30k"
 CORS(app)
 
-db = MongoClient('mongodb://localhost:27017')
+db = MongoClient('mongodb+srv://mwelwankuta:nVAlMFIyWKJeBl1s@cluster0.gtoe2.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
 cursor = db['storiez']
 
 

@@ -4,8 +4,9 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-flask="*"
-mysql-connector-python="*"
+flask = "*"
+flask-cors = "*"
+pymongo = "*"
 
 [dev-packages]
 
