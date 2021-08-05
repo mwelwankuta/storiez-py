@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {% include 'partials/head.html' %}
+        <title>Create Account</title>
+    </head>
+<body class="w-full md:h-screen flex">
+    <div class="m-auto  md:w-5/12 p-10 md:bg-gray-100 rounded-md md:border border-gray-300 text-center">
+        <h2 class="font-semibold text-2xl">Create an Account</h2>
+        <div class="mt-10">
+            <form class=" flex flex-col gap-3" action="/create-account" method="POST">
+                <div class="flex flex-col text-left">
+                    <label for="name">Name</label>
+                    <input type="name" name="name" id="name" class="p-2 border-b border-black">
+                </div>
+                <div class="flex flex-col text-left">
+                    <label for="email">Email/Phone</label>
+                    <input type="email" name="email" id="email" class="p-2 border-b border-black">
+                </div>
+                <div class="flex flex-col text-left">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password" class="p-2 border-b border-black">
+                </div>
+                <div class="flex flex-col text-left">
+                    <label for="password">Confirm Password</label>
+                    <input type="password" name="confirm" id="confirm" class="p-2 border-b border-black">
+                </div>
+                <!-- If email is taken -->
+                {% if error %}
+                    <p class="text-left text-red-600 font-semibold">{{error}}</p>
+                {% endif %}
+                <!-- If email is taken -->
+                <button type="submit" class="px-2 py-3 text-white bg-black rounded-md text-sm mb-2">Create account</button>
+            </form>
+            <p>does not have an account? <span class="font-semibold"> <a href="/login">log in </a></span></p>
+        </div>
+
+    </div>
+</body>
+</html>

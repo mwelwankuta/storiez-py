@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% include 'partials/head.html' %}
+    <title>Login</title>
+</head>
+<body class="w-full md:h-screen flex">
+    <div class="m-auto  md:w-5/12 p-10 md:bg-gray-100 rounded-md md:border border-gray-300 text-center">
+        <h2 class="font-semibold text-2xl">Welcome to Storiez</h2>
+        <p class="mt-4 text-left">A place where you can connect with your friends, and make your day a showpiece</p>
+
+        <div class="mt-10">
+            <p>{{session['email']}}</p>
+            <form class=" flex flex-col gap-3" action="" method="post">
+                <div class="flex flex-col text-left">
+                    <label for="email">Email/Phone</label>
+                    <input type="email" name="email" id="email" value="{{email_value}}" class="p-2 border-b border-black">
+                </div>
+                <div class="flex flex-col text-left">
+                    <label for="password"></label>
+                    <input type="password" name="password" id="password" class="p-2 border-b border-black">
+                </div>
+                <button class="px-2 py-3 text-white bg-black rounded-md text-sm mb-2">Log in</button>
+                <!-- If email is taken -->
+                {% if error %}
+                    <p class="text-left text-red-600 font-semibold mb-2">{{error}}</p>
+                {% endif %}
+                <!-- If email is taken -->
+            </form>
+            <p>Doesn't have an account? <span class="font-semibold"> <a href="/create-account">create one</a></span></p>
+        </div>
+
+    </div>
+</body>
+</html>
