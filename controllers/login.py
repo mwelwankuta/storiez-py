@@ -5,12 +5,11 @@ def login_controller(cursor):
         # checking if session is empty
         if session.get('email') == False or session.get('email') == None:
             return render_template("auth/login.html")
-        # when session is not empty
-        else:
-            if session['email']:
-                return render_template('post.html')     
         
-    
+        # when session is not empty
+        if session['email']:
+            return render_template('post.html')     
+        
     # get login values
     email = request.form.get('email')
     password = request.form.get('password')
@@ -24,11 +23,11 @@ def login_controller(cursor):
         session['name'] = user['name']
         session['friends'] = user['friends']
         session['email'] = user['email/phone']
-        print('logged in by email')
+        
         return redirect(url_for('home'))
     
     # passwords did not match
-    elif user and password != user['password']:
+    elif user and password is not user['password']:
         return render_template("auth/login.html", error="your email/phone or password do not match, try again", email_value=email)
     
     # no mathing document found

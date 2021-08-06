@@ -28,13 +28,15 @@
         </ul>
     </div>
     <div>
-        {% if not user %}
+        {% if session['email'] %}
+            {% set avatar = session['name'].strip()[0].split()[0] %}
             <div class="flex items-center gap-2">
                 <a href="/logout" class="text-red-700 font-semibold">Logout</a>
-                <img class="w-10 h-10 border-2 border-black rounded-full " src="https://st4.depositphotos.com/4329009/19956/v/600/depositphotos_199564354-stock-illustration-creative-vector-illustration-default-avatar.jpg" alt="">
+                <h2 class="cursor-pointer    text-2xl text-gray-900 border border-gray-400 font-semibold uppercase bg-gray-300 rounded-full h-10 w-10 flex items-center justify-center">{{avatar}}</h2>
             </div>
         {% else %}
-            <img src="{{user.image}}" class="w-4 h-4" alt="">
+            <h2 class="font-xl font-semibold">User</h2>
+            <a href="/login" class="text-red-700 font-semibold">Login</a>
         {% endif %}
     </div>
 </nav>

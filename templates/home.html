@@ -9,24 +9,33 @@
     {% include 'partials/nav.html' %}
 
     <main class="sm:mt-10 md:mt-20 grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-1 gap-10">
-        {% if posts  %}
+        {% if posts and session.get('email') %}
             {% for post in posts %}
                 <!-- when user in logged in continue -->
-                {% if session.get('email') %}
                     <!-- only render post when author is in users friends object -->
                     {% if post.author in session['friends'] or session['email'] == post.author %}
-                        <div id="post" class="mb-2 bg-gray-100 mx-auto p-2 rounded-xl cursor-pointer hover:shadow-md border hover:border-gray-300">
+                        <div id="post" class="mt-4 mb-2 bg-gray-100 mx-auto p-2 rounded-xl cursor-pointer hover:shadow-md border hover:border-gray-300">
                             <!-- if user is author show me as user -->
                             {% if post.name == session['name'] %}
                                 <p class="capitalize font-semibold mb-1">Me</p>
-                                {% else %}
-                                    <p class="capitalize font-semibold mb-1">{{post.name}}</p>
+                            {% else %}
+                                <p class="capitalize font-semibold mb-1">{{post.name}}</p>
                             {% endif %}
                             <img id="image" src="{{post.image}}" alt="{{post.caption}}" class="rounded-xl border border-gray-300 max-h-64 w-64 object-cover">
-                            <p class="truncate">{{post.caption}}</p>
+                            <div class="flex items-center justify-between mt-2">
+                                <p class="truncate">{{post.caption}}</p>
+                                {% if post.name == session['name'] %}
+                                    <form action="/delete/{{post._id}}" method="POST">
+                                        <button type="submit" class="p-1 bg-gray-300 rounded-full flex items-center justify-center hover:bg-gray-200">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </div>
                         </div>
                     {% endif %}
-                {% endif %}
             {% endfor %}
         {% else %}
             <h2 class="font-semibold text-xl">There are not posts at the moment</h2>

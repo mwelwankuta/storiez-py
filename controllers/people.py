@@ -6,12 +6,13 @@ def people_controller(cursor):
          # checking if session is empty
         if session.get('email') == False or session.get('email') == None:
             return redirect(url_for('login'))
+        
         # when session is not empty
-        else:
-            my_email = session['email']
-            db_my = cursor['users'].find_one({"email/phone": my_email}) 
-            if session['email']:
-                return render_template('people.html', friends=db_my['friends'])
+        my_email = session['email']
+        db_my = cursor['users'].find_one({"email/phone": my_email}) 
+        
+        if session['email']:
+            return render_template('people.html', friends=db_my['friends'])
         
     my_email = session['email']
     friend_email = request.form.get('friend')
