@@ -8,22 +8,45 @@
     <!-- include navbar -->
     {% include 'partials/nav.html' %}
 
-    <main class="sm:mt-10 md:mt-20 grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-1 gap-10">
+    <form class="mt-10 md:mt-20 flex flex-col border p-2 sm:rounded-md" action="/post" method="POST" enctype="multipart/form-data">
+        <input class="border rounded bg-gray-100 mb-2 p-2" name="text" type="text" placeholder="What's on your mind?" aria-multiline="true">
+        <div class="flex justify-between items-center">
+            <button type="submit" class="px-2 py-3 text-white bg-black rounded-md text-md mb-2 w-24">Post</button>
+            <div class="p-2 rounded-full bg-gray-200 flex items-end gap-2 cursor-pointer">
+                
+                <div>
+                    <input type="file" name="image" id="image" hidden>
+                    <label for="image">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
+                        </svg>
+                    </label>
+                </div>    
+            </div>
+        </div>
+        {% if form_message %}
+        <p class="text-red-600">{{form_message}}</p>
+        {% endif %}
+    </form>
+    <h2 class="text-xl font-semibold mb-2 mt-4">Feed</h2>
+    <main class="mt-10 flex flex-col mb-4">
         {% if posts and session.get('email') %}
             {% for post in posts %}
                 <!-- when user in logged in continue -->
                     <!-- only render post when author is in users friends object -->
-                    {% if post.author in session['friends'] or session['email'] == post.author %}
-                        <div id="post" class="mt-4 mb-2 bg-gray-100 mx-auto p-2 rounded-xl cursor-pointer hover:shadow-md border hover:border-gray-300">
+                    {% if post.author in session['friends'] or post.author == session['email'] %}
+                        <div id="post" class="bg-gray-100 py-2 px-4 border-b-2 border-gray-400">
                             <!-- if user is author show me as user -->
                             {% if post.name == session['name'] %}
-                                <p class="capitalize font-semibold mb-1">Me</p>
-                            {% else %}
                                 <p class="capitalize font-semibold mb-1">{{post.name}}</p>
+                            {% else %}
+                                <p class="capitalize font-semibold mb-1">{{post.name}}#<span>{{post.author}}</span></p></p>
                             {% endif %}
-                            <img id="image" src="{{post.image}}" alt="{{post.caption}}" class="rounded-xl border border-gray-300 max-h-64 w-64 object-cover">
+                            {% if post.image %}
+                                <img id="image" src="{{post.image}}" alt="{{post.caption}}" class="md:rounded-xl border border-gray-300 max-h-64 w-64 object-cover">
+                            {% endif %}
                             <div class="flex items-center justify-between mt-2">
-                                <p class="truncate">{{post.caption}}</p>
+                                <p class="truncate">{{post.text}}</p>
                                 {% if post.name == session['name'] %}
                                     <form action="/delete/{{post._id}}" method="POST">
                                         <button type="submit" class="p-1 bg-gray-300 rounded-full flex items-center justify-center hover:bg-gray-200">

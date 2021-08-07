@@ -3,7 +3,7 @@ from flask import Flask
 import flask_cors 
 from pymongo import MongoClient
 
-# enpoint imports
+# endpoint imports
 from endpoints import endpoints
 
 # init app

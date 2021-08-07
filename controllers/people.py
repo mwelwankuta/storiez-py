@@ -43,7 +43,8 @@ def people_controller(cursor):
         cursor['users'].update_one({"email/phone": friend_email}, {
                                 '$set': {"friends": [*db_friend[0]['friends'], my_email]}})
         
+        new_user = cursor['users'].find_one({"email/phone": my_email})
         # reset friends in session 
-        session['friends'] = db_my['friends']
+        session['friends'] = new_user['friends']
         
         return render_template('people.html', message=f"you and {db_friend[0]['name']} are now friends")

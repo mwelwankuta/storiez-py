@@ -9,44 +9,55 @@ def post_controller(cursor):
         return redirect(url_for('login'))
     
     # when session is not empty
-    if session['email']:
+    if session['email']:        
         
-        if request.method == "GET":
-            return render_template('post.html')
-        
-        user = session['email']
-        name = session['name']
-    
-        caption = request.form.get('caption')
-        image = request.files.get('image')
-        
-        if not image:
-            return render_template('post.html', message="you didn't add an image")
-        
-        # rename file   
-        def filename(name):
-            file = name.split('.')
-            image_extentions = ['jpg','png','jpeg']
-            extention = file[len(file) - 1]
+        if request.method == "POST":
             
-            if extention not in image_extentions:
-                return render_template('post.py',message="the image you uploaded is not supported by storiez")
-            
-            return f"{token_urlsafe(16)}.{extention}"
+            user = session['email']
+            name = session['name']
         
-        # renamed file
-        image_to_save = filename(image.filename)
+            text = request.form.get('text')
+            image = request.files.get('image')
+            
+            print(image)
+            # if user added an aimage        
+            if image:
+                # renamed file
+                image_to_save = filename(image.filename)
 
-        # if file is converted            
-        if isinstance(image_to_save, str):
-            image.save(f'public/uploads/{image_to_save}')
+                # if file is converted            
+                if isinstance(image_to_save, str):
+                    image.save(f'public/uploads/{image_to_save}')
 
+                    post = {
+                        "author": user,
+                        "name": name,
+                        "text": text,
+                        "image": f'public/uploads/{image_to_save}'
+                    }
+
+                    cursor['posts'].insert_one(post)
+                    return redirect(url_for('home'))
+            
+            if not text:
+                return render_template('home.html', form_message="you need to add something to post")
+            
             post = {
                 "author": user,
                 "name": name,
-                "caption": caption,
-                "image": f'public/uploads/{image_to_save}'
+                "text": text
             }
 
             cursor['posts'].insert_one(post)
             return redirect(url_for('home'))
+        
+# rename file   
+def filename(name):
+    file = name.split('.')
+    image_extentions = ['jpg','png','jpeg']
+    extention = file[len(file) - 1]
+    
+    if extention not in image_extentions:
+        return render_template('post.py',message="the image you uploaded is not supported by storiez")
+    
+    return f"{token_urlsafe(16)}.{extention}"
