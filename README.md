@@ -1,10 +1,11 @@
 <h1 align="center">Storiez</h1>
 
-## Real time web applications with Socket.io (Chat Application)
+## A mini flask social networking site
 
 #### How to run  :
 1. install pipenv: `pip3 install pipenv`
-2. install the Pipfile packages with `pipebv install`
+2. install the Pipfile packages with `pipenv install`
+3. run with `flak run app:app` or `python3 app.py`
 
 <br/>
 <p align="center">
