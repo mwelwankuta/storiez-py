@@ -4,66 +4,77 @@
     {% include 'partials/head.html' %}
     <title>Storiez | Home</title>
 </head>
-<body class="mt-14 sm:mx-10">
+<body class="mt-14">
     <!-- include navbar -->
     {% include 'partials/nav.html' %}
 
-    <form class="mt-10 md:mt-20 flex flex-col border p-2 sm:rounded-md" action="/post" method="POST" enctype="multipart/form-data">
-        <input class="border rounded bg-gray-100 mb-2 p-2" name="text" type="text" placeholder="What's on your mind?" aria-multiline="true">
-        <div class="flex justify-between items-center">
-            <button type="submit" class="px-2 py-3 text-white bg-black rounded-md text-md mb-2 w-24">Post</button>
-            <div class="p-2 rounded-full bg-gray-200 flex items-end gap-2 cursor-pointer">
-                
-                <div>
-                    <input type="file" name="image" id="image" hidden>
-                    <label for="image">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
-                        </svg>
-                    </label>
-                </div>    
-            </div>
-        </div>
-        {% if form_message %}
-        <p class="text-red-600">{{form_message}}</p>
-        {% endif %}
-    </form>
-    <h2 class="text-xl font-semibold mb-2 mt-4">Feed</h2>
-    <main class="mt-10 flex flex-col mb-4">
+    <!-- post form -->
+    {% include 'partials/post-form.html'%}
+    <!-- post form -->
+
+    <h2 class="text-xl font-semibold mx-5 mt-4">Feed</h2>
+    <main class="mt-5 flex flex-col mb-4">
         {% if posts and session.get('email') %}
-            {% for post in posts %}
-                <!-- when user in logged in continue -->
-                    <!-- only render post when author is in users friends object -->
-                    {% if post.author in session['friends'] or post.author == session['email'] %}
-                        <div id="post" class="bg-gray-100 py-2 px-4 border-b-2 border-gray-400">
-                            <!-- if user is author show me as user -->
-                            {% if post.name == session['name'] %}
-                                <p class="capitalize font-semibold mb-1">{{post.name}}</p>
-                            {% else %}
-                                <p class="capitalize font-semibold mb-1">{{post.name}}#<span>{{post.author}}</span></p></p>
-                            {% endif %}
-                            {% if post.image %}
-                                <img id="image" src="{{post.image}}" alt="{{post.caption}}" class="md:rounded-xl border border-gray-300 max-h-64 w-64 object-cover">
-                            {% endif %}
-                            <div class="flex items-center justify-between mt-2">
-                                <p class="truncate">{{post.text}}</p>
-                                {% if post.name == session['name'] %}
-                                    <form action="/delete/{{post._id}}" method="POST">
-                                        <button type="submit" class="p-1 bg-gray-300 rounded-full flex items-center justify-center hover:bg-gray-200">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                            </svg>
-                                        </button>
-                                    </form>
-                                {% endif %}
+            {% for post in posts|reverse %}
+                <div class="bg-gray-100 py-2 px-4 border-b-2 border-gray-400">
+                    <!-- if user is author show me as user -->
+                    {% if post.name == session['name'] %}
+                    {% set avatar = session['name'].strip()[0].split()[0] %}
+                        <div class="flex items-center gap-2 mb-5 ">
+                            <h2 class="cursor-pointer    text-2xl text-gray-900 border border-gray-400 font-semibold uppercase bg-gray-300 rounded-full h-10 w-10 flex items-center justify-center">{{avatar}}</h2>
+                            <p class="capitalize font-semibold mb-1">{{post.name}}</p>
+                        </div>
+                    {% else %}
+                        <p class="capitalize font-semibold mb-1 ">{{post.name}}</p>
+                    {% endif %}
+                    <!-- if an image exists render it -->
+                    {% if post.image %}
+                        <img id="image" src="{{post.image}}" alt="{{post.caption}}" class="max-h-64 w-64 object-cover px-5">
+                    {% endif %}
+                    
+                    {% if post.audio %}
+                        <audio src="/{{post.audio}}" controls></audio>
+                    {% endif %}
+                    <!-- card body -->
+                    <div class="flex items-end justify-between mt-2">
+                        <div class="flex items-start flex-col">
+                            <p class="overflow-hidden mb-2">{{post.text}}</p>
+                            <!-- like button -->
+                            <div class="flex items-center">
+                                <form action="/like/{{post._id}}" method="POST" class="flex gap-4">
+                                    <button class="px-2 bg-gray-300 ">likes <span class="font-bold">{{post.likes|length}}</span></button>
+                                    <a href="/post/{{post._id}}" class="px-2 bg-gray-200">View more</a>
+                                </form>
+                                <!-- comment button -->
+                                <form action="/like/{{post._id}}" method="POST" class="flex gap-4">
+                                    <a href="/post/{{post._id}}" class="px-2 bg-gray-300 ">comments <span class="font-bold">{{post.comments|length}}</span></a>
+                                </form>
                             </div>
                         </div>
+                        {% if post.name == session['name'] %}
+                        <!-- delete button -->
+                        <form action="/delete/{{post._id}}" method="POST">
+                            <button type="submit" class="p-1 bg-gray-300 rounded-full flex items-center justify-center hover:bg-gray-200">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </button>
+                        </form>
                     {% endif %}
+                    </div>
+                </div>
             {% endfor %}
+        {% elif session['friends'] == [] %}
+            <div class="text-center">
+                <h2 class="font-semibold text-xl mb-4">Try adding some friends to see more posts</h2>
+                <a href="/people" class=" py-1 px-2 bg-gray-100 text-gray-700   text-sm hover:bg-gray-200">Add Friends</a>
+            </div>
         {% else %}
-            <h2 class="font-semibold text-xl">There are not posts at the moment</h2>
+            <div class="text-center">
+                <h2 class="font-semibold text-xl mb-4">There are not posts at the moment, try refreshing</h2>
+                <a href="/" class=" py-1 px-2 bg-gray-100 text-gray-700   text-sm hover:bg-gray-200">Refresh</a>
+            </div>
         {% endif %}
     </main>
-    <script src="/public/js/home.js"></script>
 </body>
 </html>

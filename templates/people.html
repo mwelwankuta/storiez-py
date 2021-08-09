@@ -4,7 +4,7 @@
     {% include 'partials/head.html' %}
     <title>Storiez | People</title>
 </head>
-<body class="mt-14 md:mx-64 sm:mx-10 p-2">
+<body class="mt-14 mx-10 p-2">
     <!-- include navbar -->
     {% include 'partials/nav.html' %}
     
@@ -26,8 +26,11 @@
 
     <div id="friends">
         {% for friend in friends %}
-            <div class="bg-gray-100 p-1 rounded-md hover:bg-gray-200 mb-2 cursor-pointer">
+            <div class="bg-gray-100 p-1 rounded-md hover:bg-gray-200 mb-2 cursor-pointer flex justify-between">
                 <p>{{friend}}</p>
+                <form action="/unfriend/{{friend}}" method="POST">
+                    <button class="bg-gray-200 px-2 rounded-sm border border-gray-400">remove</button>
+                </form>
             </div>
         {% endfor %}
     </div>

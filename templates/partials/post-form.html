@@ -1,0 +1,26 @@
+<form class="flex flex-col border p-2" action="/post" method="POST" enctype="multipart/form-data">
+    <input class="border bg-gray-100 mb-2 p-2" name="text" type="text" placeholder="What's on your mind?" aria-multiline="true">
+    <div class="flex justify-between items-center">
+        
+        <div class="flex gap-3 items-center">
+            <div class="p-2 rounded-full bg-gray-200 flex items-end gap-2 cursor-pointer">
+                <input type="file" name="image" id="image" accept="image/*" hidden>
+                <label for="image">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
+                    </svg>
+                </label>
+            </div>
+            <div class="p-2 rounded-full bg-gray-200 flex items-end gap-2 cursor-pointer">
+                <input type="file" name="audio" accept="audio/*" id="audio" hidden>
+                <label for="audio">
+                    <span>Audio</span>
+                </label>
+            </div>
+        </div>
+        <button type="submit" class="p-2 text-white bg-black text-md mb-2 w-24">Post</button>
+    </div>
+    {% if form_message %}
+    <p class="text-red-600">{{form_message}}</p>
+    {% endif %}
+</form>

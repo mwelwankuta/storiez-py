@@ -10,6 +10,10 @@ from controllers.post import post_controller
 from controllers.post import post_controller
 from controllers.logout import logout_countroller
 from controllers.delete import delete_controller
+from controllers.like import like_controller
+from controllers.unfriend import unfriend_controller
+from controllers.view_post import view_post_controller
+from controllers.comment import comment_controller
 
 # endpoints
 def endpoints(app, cursor):
@@ -37,6 +41,10 @@ def endpoints(app, cursor):
     @app.route('/people', methods=['POST', 'GET'])
     def people():
         return people_controller(cursor)
+    
+    @app.route('/post/<string:id>', methods=['GET'])
+    def view_post(id):
+        return view_post_controller(cursor, id)
 
     @app.route('/created-account')
     def created_account():
@@ -46,4 +54,16 @@ def endpoints(app, cursor):
     def delete(id):
         return delete_controller(cursor, id)
     
-    return home, login,logout, create_account, post, people, create_account, created_account ,delete
+    @app.route('/like/<string:id>', methods=['POST'])
+    def like(id):
+        return like_controller(cursor, id)
+    
+    @app.route('/unfriend/<string:id>', methods=['POST'])
+    def unfriend(id):
+        return unfriend_controller(cursor, id)
+    
+    @app.route('/comment/<string:id>', methods=['POST'])
+    def comment(id):
+        return comment_controller(cursor, id)
+    
+    return home, login,logout, create_account, post, people, create_account, created_account ,delete, like, unfriend, view_post, comment

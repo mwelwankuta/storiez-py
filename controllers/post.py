@@ -9,55 +9,78 @@ def post_controller(cursor):
         return redirect(url_for('login'))
     
     # when session is not empty
-    if session['email']:        
+    if session['email']:                
         
-        if request.method == "POST":
-            
-            user = session['email']
-            name = session['name']
+        user = session['email']
+        name = session['name']
+    
+        text = request.form.get('text')
+        image = request.files.get('image')
+        audio = request.files.get('audio')
         
-            text = request.form.get('text')
-            image = request.files.get('image')
+        print(audio.filename)
+        
+        # if user added an aimage        
+        if image:
+            # renamed file
+            image_to_save = filename(image.filename)
+
+            # if file is converted            
+            if isinstance(image_to_save, str):
+                image.save(f'public/uploads/{image_to_save}')
+
+                image_text = {
+                    "author": user,
+                    "name": name,
+                    "text": text,
+                    "image": f'public/uploads/{image_to_save}',
+                    "likes": [],
+                    "comments":[]
+                }
+
+                cursor['posts'].insert_one(image_text)
+                return redirect(url_for('home'))
+        
+        if audio:
+            audio_to_save = filename(audio.filename)
+
+            # if file is converted            
+            if isinstance(audio_to_save, str):
+                audio.save(f'public/uploads/{audio_to_save}')
+
+                audio_post = {
+                    "author": user,
+                    "name": name,
+                    "text": text,
+                    "audio": f'public/uploads/{audio_to_save}',
+                    "likes": [],
+                    "comments":[]
+                }
+
+                cursor['posts'].insert_one(audio_post)
+                return redirect(url_for('home'))
             
-            print(image)
-            # if user added an aimage        
-            if image:
-                # renamed file
-                image_to_save = filename(image.filename)
+        if len(text) == 0 or len(image.filename):
+            return render_template('home.html', form_message="you need to add something to post")
+        
+        text_post = {
+            "author": user,
+            "name": name,
+            "text": text,
+            "likes": [],
+            "comments":[]
+        }
 
-                # if file is converted            
-                if isinstance(image_to_save, str):
-                    image.save(f'public/uploads/{image_to_save}')
-
-                    post = {
-                        "author": user,
-                        "name": name,
-                        "text": text,
-                        "image": f'public/uploads/{image_to_save}'
-                    }
-
-                    cursor['posts'].insert_one(post)
-                    return redirect(url_for('home'))
-            
-            if not text:
-                return render_template('home.html', form_message="you need to add something to post")
-            
-            post = {
-                "author": user,
-                "name": name,
-                "text": text
-            }
-
-            cursor['posts'].insert_one(post)
-            return redirect(url_for('home'))
+        cursor['posts'].insert_one(text_post)
+        return redirect(url_for('home'))
         
 # rename file   
 def filename(name):
     file = name.split('.')
-    image_extentions = ['jpg','png','jpeg']
+    image_extentions = ['jpg','png','jpeg','mp3']
     extention = file[len(file) - 1]
     
     if extention not in image_extentions:
-        return render_template('post.py',message="the image you uploaded is not supported by storiez")
+        return render_template('home.html',message="the image you uploaded is not supported by storiez")
     
     return f"{token_urlsafe(16)}.{extention}"

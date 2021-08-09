@@ -1,4 +1,5 @@
 from flask import request, render_template, session, redirect, url_for
+from bson.objectid import ObjectId
 
 def home_controller(cursor):
     posts = cursor['posts'].find({})
@@ -11,5 +12,11 @@ def home_controller(cursor):
     
     # when session is not empty
     if session['email']:
-        return render_template('home.html', posts=posts)
+        
+        # filtering posts to show
+        filtered_posts = []
+        for post in posts:
+            if post['author'] in session['friends'] or post['author'] == session['email']:
+                filtered_posts.append(post)
+        return render_template('home.html', posts=filtered_posts)
         
